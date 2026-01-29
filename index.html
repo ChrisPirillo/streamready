@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Primary SEO Meta Tags -->
+    <title>StreamReady - Professional Live Stream Pre-Flight Checklist</title>
+    <meta name="description" content="StreamReady is a professional-grade pre-flight checklist application designed for live streamers and digital creators. Helps to remind streamers to optimize audio, video, system, and social media settings to ensure high-quality broadcasts and audience engagement.">
+    <meta name="keywords" content="StreamReady, streamer checklist, live streaming prep, Twitch tools, OBS optimization, broadcast quality, creator tools, pre-flight checklist">
+    <meta name="author" content="Chris Pirillo">
+    <link rel="canonical" href="https://pirillo.com/arcade/streamready.html">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pirillo.com/arcade/streamready.html">
+    <meta property="og:title" content="StreamReady - Professional Live Stream Pre-Flight Checklist">
+    <meta property="og:description" content="Master your broadcast with the StreamReady pre-flight checklist. Don't go live without checking your audio, lighting, and social notifications.">
+    <meta property="og:image" content="https://pirillo.com/arcade/images/streamready.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@ChrisPirillo">
+    <meta name="twitter:creator" content="@ChrisPirillo">
+    <meta name="twitter:url" content="https://pirillo.com/arcade/streamready.html">
+    <meta name="twitter:title" content="StreamReady - Streamer Pre-Flight">
+    <meta name="twitter:description" content="The ultimate checklist tool for professional live streamers to ensure every broadcast is perfect.">
+    <meta name="twitter:image" content="https://pirillo.com/arcade/images/streamready.png">
+
+    <!-- Performance & Resource Hints -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "StreamReady",
+      "url": "https://pirillo.com/arcade/streamready.html",
+      "description": "Professional-grade pre-flight checklist for live streamers by Chris Pirillo.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web",
+      "author": {
+        "@type": "Person",
+        "name": "Chris Pirillo"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+
+    <!-- Google Analytics (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1CQ4D3VQ3L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-1CQ4D3VQ3L');
+    </script>
+
+    <style>
+        :root {
+            --bg: #020617;
+            --card-bg: #0f172a;
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --border: #1e293b;
+            --accent-glow: rgba(99, 102, 241, 0.15);
+            --brand-gradient: linear-gradient(to right, #818cf8, #c084fc);
+            --success-gradient: linear-gradient(to right, #22c55e, #34d399);
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 140px; /* Space for the floating live button */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* --- Header --- */
+        .header {
+            position: sticky;
+            top: 0;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .brand-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .subheading {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 4px 0 0 40px; /* Aligned with text after SVG */
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        /* --- Progress Bar --- */
+        .progress-track {
+            height: 32px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--brand-gradient);
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .progress-fill.complete {
+            background: var(--success-gradient);
+        }
+
+        /* --- Grid & Cards --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            min-height: 400px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .card.done:not(.edit-mode-active) {
+            opacity: 0.6;
+        }
+
+        .card-header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--border);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .card-title-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .card-title-input {
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-weight: 700;
+            font-size: 1rem;
+            width: 100%;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .card-title-input:focus {
+            background: rgba(255,255,255,0.1);
+            outline: none;
+        }
+
+        .task-list { padding: 12px; flex-grow: 1; list-style: none; margin: 0; }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            transition: background 0.1s;
+            cursor: pointer;
+        }
+
+        .task-item:hover { background: rgba(255,255,255,0.05); }
+
+        .task-text-input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .task-text-input:focus {
+            outline: none;
+            cursor: text;
+        }
+
+        .task-item.checked .task-text-input {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #475569;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .task-item.checked .checkbox {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .icon-check { display: none; color: white; width: 14px; height: 14px; }
+        .task-item.checked .icon-check { display: block; }
+
+        /* --- Buttons --- */
+        .action-btns { display: flex; gap: 8px; align-items: center; padding-top: 4px; }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover { color: white; background: rgba(255,255,255,0.1); }
+        .btn-icon.active { color: #818cf8; background: rgba(129, 140, 248, 0.15); }
+        .btn-icon.danger:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+
+        .btn-add-task {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed var(--border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .btn-add-task:hover { background: rgba(255,255,255,0.08); color: white; }
+
+        .btn-add-cat {
+            background: var(--card-bg);
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+            min-height: 200px;
+            transition: all 0.2s;
+        }
+        .btn-add-cat:hover { border-color: #818cf8; color: #818cf8; background: rgba(129, 140, 248, 0.05); }
+
+        /* --- Footer --- */
+        .footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 24px;
+            text-align: center;
+            transform: translateY(120px);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1000;
+        }
+
+        .footer-bar.visible { transform: translateY(0); }
+
+        .btn-live {
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 16px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(34, 197, 94, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.1s;
+        }
+        .btn-live:hover { transform: scale(1.05); }
+        .btn-live:active { transform: scale(0.95); }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal h2 { margin-top: 0; }
+        .modal p { color: var(--text-muted); line-height: 1.5; margin-bottom: 24px;}
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-primary, .btn-outline {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            flex: 1;
+            padding: 0 20px;
+            transition: filter 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--brand-gradient);
+            border: none;
+            color: white;
+        }
+        .btn-primary:hover { filter: brightness(1.1); }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+
+        .hidden { display: none !important; }
+
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container">
+            <div class="top-row">
+                <div class="brand-group">
+                    <h1 class="logo">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#818cf8" aria-hidden="true">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        StreamReady
+                    </h1>
+                    <p class="subheading">Live Stream Pre-Flight Checklist</p>
+                </div>
+                <nav class="action-btns" aria-label="Application Controls">
+                    <button class="btn-icon" id="btn-io" onclick="toggleIO()" title="Import or Export Settings">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        <span class="hidden">Import Export</span>
+                    </button>
+                    <button class="btn-icon" id="btn-edit" onclick="toggleEditMode()" title="Manage Categories and Tasks">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        <span class="hidden">Manage</span>
+                    </button>
+                    <button class="btn-icon danger" onclick="resetAll()" title="Reset All Progress">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M3 21v-5h5"></path></svg>
+                        <span class="hidden">Reset</span>
+                    </button>
+                </nav>
+            </div>
+            
+            <div class="progress-track" role="progressbar" aria-label="Checklist progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div id="progress-fill" class="progress-fill">0%</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="grid" class="grid">
+            <!-- Content Injected via Script -->
+        </div>
+    </main>
+
+    <footer id="footer-bar" class="footer-bar">
+        <button class="btn-live" onclick="launchStream()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            Start Stream
+        </button>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal-io" class="modal-overlay" role="dialog" aria-labelledby="io-modal-title">
+        <div class="modal">
+            <h2 id="io-modal-title">Import / Export Data</h2>
+            <p>Back up your custom checklist or import existing settings from a JSON file.</p>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="exportData()">Download JSON</button>
+                <label class="btn-outline">
+                    Import JSON
+                    <input type="file" id="import-file" style="display:none" onchange="importData(event)" accept=".json">
+                </label>
+            </div>
+            <button class="btn-outline" style="width:100%; margin-top:12px;" onclick="toggleIO()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // CORE JAVASCRIPT - REMAINING UNTOUCHED AS PER PRODUCTION REQUIREMENTS
+        const CATEGORY_COLORS = ['#f472b6', '#22d3ee', '#c084fc', '#4ade80', '#facc15', '#fb923c', '#818cf8'];
+        
+        const ICONS = {
+            Audio: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`,
+            Video: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 8-6 4 6 4V8Z"></path><rect x="2" y="6" width="14" height="12" rx="2" ry="2"></rect></svg>`,
+            System: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg>`,
+            Socials: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>`,
+            Self: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" x2="9.01" y1="9" y2="9"></line><line x1="15" x2="15.01" y1="9" y2="9"></line></svg>`,
+            Default: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`,
+            Check: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+            Trash: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>`
+        };
+
+        const defaultData = {
+            categories: [
+                { id: 'c1', name: 'Audio', color: '#f472b6' },
+                { id: 'c2', name: 'Video', color: '#22d3ee' },
+                { id: 'c3', name: 'System', color: '#c084fc' },
+                { id: 'c4', name: 'Socials', color: '#4ade80' },
+                { id: 'c5', name: 'Self', color: '#facc15' }
+            ],
+            tasks: [
+                { id: 'a1', catId: 'c1', text: 'Mic Check (No clipping)', completed: false },
+                { id: 'a2', catId: 'c1', text: 'System Audio / Game Sound', completed: false },
+                { id: 'a3', catId: 'c1', text: 'Background Music Playlist', completed: false },
+                { id: 'a4', catId: 'c1', text: 'Discord Voice Settings', completed: false },
+                { id: 'v1', catId: 'c2', text: 'Camera Focus & Angle', completed: false },
+                { id: 'v2', catId: 'c2', text: 'Key Lights On', completed: false },
+                { id: 'v3', catId: 'c2', text: 'Green Screen Check', completed: false },
+                { id: 'v4', catId: 'c2', text: 'Scene Selection Correct', completed: false },
+                { id: 's1', catId: 'c3', text: 'Close Unnecessary Apps', completed: false },
+                { id: 's2', catId: 'c3', text: 'Check Internet Upload Speed', completed: false },
+                { id: 's3', catId: 'c3', text: 'OBS/Streamlabs Admin Mode', completed: false },
+                { id: 's4', catId: 'c3', text: 'Stream Key / Login Verified', completed: false },
+                { id: 'so1', catId: 'c4', text: 'Update Stream Title', completed: false },
+                { id: 'so2', catId: 'c4', text: 'Update Game/Category', completed: false },
+                { id: 'so3', catId: 'c4', text: 'Post "Going Live" Tweet', completed: false },
+                { id: 'so4', catId: 'c4', text: 'Discord Notification Sent', completed: false },
+                { id: 'me1', catId: 'c5', text: 'Water Bottle Filled', completed: false },
+                { id: 'me2', catId: 'c5', text: 'Snacks Ready', completed: false },
+                { id: 'me3', catId: 'c5', text: 'Stretch / Posture Check', completed: false }
+            ]
+        };
+
+        let appData = {};
+        let isEditMode = false;
+
+        function init() {
+            const saved = localStorage.getItem('streamReadyData_v3');
+            if (saved) {
+                try {
+                    appData = JSON.parse(saved);
+                } catch (e) {
+                    appData = JSON.parse(JSON.stringify(defaultData));
+                }
+            } else {
+                appData = JSON.parse(JSON.stringify(defaultData));
+            }
+            render();
+        }
+
+        function save() {
+            localStorage.setItem('streamReadyData_v3', JSON.stringify(appData));
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            document.getElementById('btn-edit').classList.toggle('active', isEditMode);
+            render();
+        }
+
+        function toggleIO() {
+            const modal = document.getElementById('modal-io');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function toggleTask(id) {
+            if (isEditMode) return;
+            const task = appData.tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                save();
+                render();
+            }
+        }
+
+        function addTask(catId) {
+            const id = 't' + Date.now();
+            appData.tasks.push({ id, catId, text: 'New Task', completed: false });
+            save();
+            render();
+            setTimeout(() => document.querySelector(`[data-id="${id}"] input`)?.focus(), 10);
+        }
+
+        function removeTask(id) {
+            appData.tasks = appData.tasks.filter(t => t.id !== id);
+            save();
+            render();
+        }
+
+        function updateTaskText(id, text) {
+            const task = appData.tasks.find(t => t.id === id);
+            if (task) {
+                task.text = text;
+                save();
+            }
+        }
+
+        function addCategory() {
+            const id = 'c' + Date.now();
+            const color = CATEGORY_COLORS[appData.categories.length % CATEGORY_COLORS.length];
+            appData.categories.push({ id, name: 'New Section', color });
+            save();
+            render();
+        }
+
+        function removeCategory(id) {
+            if (confirm("Delete this entire category and its tasks?")) {
+                appData.categories = appData.categories.filter(c => c.id !== id);
+                appData.tasks = appData.tasks.filter(t => t.catId !== id);
+                save();
+                render();
+            }
+        }
+
+        function updateCategoryName(id, name) {
+            const cat = appData.categories.find(c => c.id === id);
+            if (cat) {
+                cat.name = name;
+                save();
+            }
+        }
+
+        function resetAll() {
+            if (confirm("Reset all progress?")) {
+                appData.tasks.forEach(t => t.completed = false);
+                save();
+                render();
+            }
+        }
+
+        function exportData() {
+            const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `streamready_config.json`;
+            a.click();
+            toggleIO();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (imported.categories && imported.tasks) {
+                        appData = imported;
+                        save();
+                        render();
+                        toggleIO();
+                    }
+                } catch (err) {
+                    alert("Invalid JSON file.");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function launchStream() {
+            alert("✨ Stream Launch Sequence Initialized! Good luck out there!");
+        }
+
+        function render() {
+            const grid = document.getElementById('grid');
+            const fill = document.getElementById('progress-fill');
+            const footer = document.getElementById('footer-bar');
+            
+            const total = appData.tasks.length;
+            const done = appData.tasks.filter(t => t.completed).length;
+            const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+            
+            fill.style.width = pct + '%';
+            fill.textContent = pct > 0 ? pct + '%' : '';
+            fill.classList.toggle('complete', pct === 100);
+
+            const track = document.querySelector('.progress-track');
+            if (track) track.setAttribute('aria-valuenow', pct);
+
+            footer.classList.toggle('visible', pct === 100 && !isEditMode);
+
+            let html = '';
+            
+            appData.categories.forEach(cat => {
+                const catTasks = appData.tasks.filter(t => t.catId === cat.id);
+                const isCatDone = catTasks.length > 0 && catTasks.every(t => t.completed);
+                const icon = ICONS[cat.name] || ICONS.Default;
+
+                html += `
+                    <section class="card ${isCatDone ? 'done' : ''} ${isEditMode ? 'edit-mode-active' : ''}">
+                        <div class="card-header" style="color: ${cat.color}">
+                            <div class="card-title-area">
+                                ${icon}
+                                ${isEditMode 
+                                    ? `<input class="card-title-input" value="${cat.name}" oninput="updateCategoryName('${cat.id}', this.value)" aria-label="Category name">`
+                                    : `<h2 style="font-weight:700; font-size:1rem; margin:0;">${cat.name}</h2>`
+                                }
+                            </div>
+                            ${isEditMode 
+                                ? `<button class="btn-icon danger" onclick="removeCategory('${cat.id}')" aria-label="Remove category">${ICONS.Trash}</button>`
+                                : (isCatDone ? '<span style="color:#22c55e; font-weight:bold;">✓</span>' : '')
+                            }
+                        </div>
+                        <ul class="task-list">
+                `;
+
+                catTasks.forEach(task => {
+                    html += `
+                        <li class="task-item ${task.completed ? 'checked' : ''}" data-id="${task.id}" onclick="toggleTask('${task.id}')">
+                            <div class="checkbox">
+                                <div class="icon-check">${ICONS.Check}</div>
+                            </div>
+                            <input class="task-text-input" value="${task.text}" 
+                                ${!isEditMode ? 'readonly' : ''} 
+                                oninput="updateTaskText('${task.id}', this.value)"
+                                onclick="isEditMode ? event.stopPropagation() : null"
+                                aria-label="Task name">
+                            ${isEditMode ? `
+                                <button class="btn-icon danger" style="padding:4px" onclick="event.stopPropagation(); removeTask('${task.id}')" aria-label="Remove task">
+                                    ${ICONS.Trash}
+                                </button>` : ''}
+                        </li>
+                    `;
+                });
+
+                if (isEditMode) {
+                    html += `<button class="btn-add-task" onclick="addTask('${cat.id}')">+ Add Task</button>`;
+                }
+
+                html += `</ul></section>`;
+            });
+
+            if (isEditMode) {
+                html += `
+                    <button class="btn-add-cat" onclick="addCategory()">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        Add Category
+                    </button>
+                `;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
